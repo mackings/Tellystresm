@@ -7,7 +7,7 @@ const successResponse = (message, data = null, additionalProperties = {}) => {
         data: data,
         ...additionalProperties 
     };
-};
+}; 
 
 const errorResponse = (message, statusCode = 500, additionalProperties = {}) => {
     return {

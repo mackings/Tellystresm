@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+
+    isVerified: {
+        type: Boolean,
+        default: false,
+      },
+      
     accounttype: {
         type: String,
         enum: ['individual', 'company'],
