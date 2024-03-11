@@ -15,7 +15,7 @@ exports.followUser = async (req, res) => {
         }
 
         const follower = await User.findById(followerId);
-        if (!follower) {
+        if (!follower) {  
             return res.status(404).json(errorResponse('Follower not found', 404));
         }
 

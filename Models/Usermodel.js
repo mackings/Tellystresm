@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
       
     accounttype: {
         type: String,
-        enum: ['individual', 'company'],
+        enum: ['individual', 'organization'],
         required: true
     },
     profile: {

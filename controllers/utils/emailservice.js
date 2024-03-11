@@ -22,9 +22,9 @@ class OTPService {
 
   async sendOTP(email) {
     try {
-      const otp = speakeasy.time({
+      const otp = speakeasy.totp({
         secret: this.otpSecret,
-        step: 600,
+        step: 60,
         encoding: "base32",
         window: 2
       });
@@ -50,14 +50,14 @@ class OTPService {
   verifyOTP(userOTP) {
     const otpDetails = {
       secret: this.otpSecret,
-      encoding: 'base32',
+      encoding: 'base32', 
       token: userOTP,
       window: 2,
-      step: 600
+      step: 60
     };
 
     try {
-      const isValid = speakeasy.time.verify(otpDetails);
+      const isValid = speakeasy.totp.verify(otpDetails);
       console.log('Is Valid OTP?', isValid);
       console.log('OTP Details:', otpDetails);
       return isValid;
