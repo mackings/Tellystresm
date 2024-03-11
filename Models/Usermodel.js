@@ -65,6 +65,10 @@ const videoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    imageUrl: {
+        type: String,
+        required: true
+    },
     isWatched: {
         type: Boolean,
         default: false
@@ -72,8 +76,21 @@ const videoSchema = new mongoose.Schema({
     isAddedToPlaylist: {
         type: Boolean,
         default: false
+    },
+    streams: {
+        type: Number,
+        default: 0
+    },
+    likes: {
+        type: Number,
+        default: 0
+    },
+    comments: {
+        type: Number,
+        default: 0
     }
-}, { timestamps: true });
+});
+ { timestamps: true };
 
 const User = mongoose.model('User', userSchema);
 const Video = mongoose.model('Video', videoSchema);

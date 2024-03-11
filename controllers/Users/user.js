@@ -163,3 +163,30 @@ exports.verifyotp = async (req, res) => {
     }
   };
   
+
+  exports.getUserProfile = async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await User.findById(userId)
+            .populate({
+                path: 'videos',
+                select: 'title description imageUrl _id videoUrl streams',
+                model: 'Video'
+            })
+            .populate('following', 'username _id')
+            .populate('followers', 'username _id');
+
+        if (!user) {
+            return res.status(404).json(errorResponse('User not found', 404));
+        }
+
+        res.status(200).json(successResponse('User profile retrieved successfully', { user }));
+    } catch (error) {
+        console.error(error);
+        res.status(500).json(errorResponse('An error occurred while processing the request', 500));
+    }
+};
+
+
+
