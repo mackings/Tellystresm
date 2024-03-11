@@ -23,7 +23,7 @@ const videoUpload = multer({
 
 
 
-exports.uploadMedia = async (req, res) => {   
+exports.uploadMedia = async (req, res) => {
     try {
         videoUpload(req, res, async function (err) {
             if (err instanceof multer.MulterError) {
@@ -37,7 +37,7 @@ exports.uploadMedia = async (req, res) => {
                 return res.status(400).json(errorResponse('No file uploaded'));
             }
 
-            const { title, description, userId } = req.body;
+            const { title, description, userId, categories } = req.body;
             const user = await User.findById(userId);
             if (!user || user.accounttype !== 'organization') {
                 return res.status(403).json(errorResponse('Only organization accounts can upload videos'));
@@ -62,7 +62,8 @@ exports.uploadMedia = async (req, res) => {
                 description: description,
                 user: userId,
                 videoUrl: videoResult.secure_url,
-                imageUrl: imageResult.secure_url 
+                imageUrl: imageResult.secure_url,
+                categories: categories
             });
 
             await newVideo.save();

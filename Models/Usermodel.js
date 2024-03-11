@@ -88,8 +88,14 @@ const videoSchema = new mongoose.Schema({
     comments: {
         type: Number,
         default: 0
+    },
+    categories: {
+        type: [String],
+        enum: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'Animation', 'Documentary', 'Family', 'Musical', 'Western', 'Biography', 'Crime', 'History', 'Sport', 'War'],
+        required: true
     }
 });
+
  { timestamps: true };
 
 const User = mongoose.model('User', userSchema);
