@@ -19,12 +19,12 @@ router.post("/api/verifycode", verifyotp);
 
 //Activities
 router.get("/api/profile/:id", verifyToken, getUserProfile);
-router.get("/api/allvideos",getAllVideos);
-router.post("/api/follow", followUser);
-router.post("/api/unfollow", unfollowUser);
-router.post("/api/upload", uploadMedia);
-router.get('/api/search/:title', search);
-router.post('/api/videos/:videoId/stream', streamVideo);
+router.get("/api/allvideos",verifyToken, getAllVideos);
+router.post("/api/follow", verifyToken, followUser);
+router.post("/api/unfollow", verifyToken, unfollowUser);
+router.post("/api/upload", verifyToken, uploadMedia);
+router.get('/api/search/:title', verifyToken, search);
+router.post('/api/videos/:videoId/stream',verifyToken,streamVideo);
 
 
 module.exports = router;
