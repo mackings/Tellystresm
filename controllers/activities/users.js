@@ -7,6 +7,7 @@ const {successResponse , errorResponse} = require("../utils/utils");
 
 
 exports.getAllVideos = async (req, res) => {
+    
     try {
         const videos = await Video.find().populate('user', 'username email');
 
@@ -35,6 +36,25 @@ exports.getAllVideos = async (req, res) => {
     }
 };
 
+
+exports.getVideosByCategory = async (req, res) => {
+
+    try {
+        const category = req.params.category;
+        const videos = await Video.find({ categories: category })
+            .select('title description videoUrl imageUrl streams')
+            .populate('user', 'username');
+        
+        if (videos.length === 0) {
+            return res.status(404).json(errorResponse('No videos found for the specified category', 404));
+        }
+
+        res.status(200).json(successResponse(`Videos in the category '${category}'`, { videos }));
+    } catch (error) {
+        console.error('Error fetching videos by category:', error);
+        res.status(500).json(errorResponse('Internal server error', 500));
+    }
+};
 
 
 exports.streamVideo = async (req, res) => {

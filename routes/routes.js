@@ -1,12 +1,11 @@
 const express = require("express");
 const { CreateUser,LoginUser, Sendverificationcode, verifyotp, requestResetToken, getUserProfile } = require("../controllers/Users/user");
 const { verifyToken } = require("../controllers/utils/tokenservice");
-const { followUser, getAllVideos, streamVideo, unfollowUser, search } = require("../controllers/activities/users");
+const { followUser, getAllVideos, streamVideo, unfollowUser, search, getVideosByCategory } = require("../controllers/activities/users");
 const multer = require("multer");
 const { Video } = require("../Models/Usermodel");
 const { successResponse, errorResponse } = require("../controllers/utils/utils");
 const { uploadMedia } = require("../controllers/Admin/uploadmedia");
-
 
 
 const router = express.Router();
@@ -24,6 +23,7 @@ router.post("/api/follow", verifyToken, followUser);
 router.post("/api/unfollow", verifyToken, unfollowUser);
 router.post("/api/upload", verifyToken, uploadMedia);
 router.get('/api/search/:title', verifyToken, search);
+router.get("/api/search/categories/:category", verifyToken, getVideosByCategory);
 router.post('/api/videos/:videoId/stream',verifyToken,streamVideo);
 
 
