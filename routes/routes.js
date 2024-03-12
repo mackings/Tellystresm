@@ -18,7 +18,7 @@ router.post("/api/req-vcode", Sendverificationcode);
 router.post("/api/verifycode", verifyotp);
 
 //Activities
-router.get("/api/profile/:id",getUserProfile);
+router.get("/api/profile/:id", verifyToken, getUserProfile);
 router.get("/api/allvideos",getAllVideos);
 router.post("/api/follow", followUser);
 router.post("/api/unfollow", unfollowUser);
