@@ -2,7 +2,7 @@ const sgMail = require('@sendgrid/mail');
 const speakeasy = require('speakeasy');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
-const otpauth = require("otpauth");
+
 
 
 class OTPService {
