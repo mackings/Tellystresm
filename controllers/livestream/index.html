@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Call</title>
+  <script src="https://cdn.jsdelivr.net/npm/socket.io/client-dist/socket.io.js"></script>
+  <script src="https://unpkg.com/peerjs@1.4.14/dist/peerjs.min.js"></script>
+</head>
+<body>
+  <video id="localVideo" autoplay></video>
+  <video id="remoteVideo" autoplay></video>
+
+  <script>
+    const socket = io();
+    const roomId = 'your-room-id'; // Replace with your room ID
+
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+
+    // Access user media (audio/video)
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        localVideo.srcObject = stream;
+        const myPeer = new Peer(); // Initialize Peer
+
+        myPeer.on('open', (id) => {
+          console.log('My peer ID:', id);
+          socket.emit('join-room', roomId); // Join the room
+        });
+
+        myPeer.on('call', (call) => {
+          call.answer(stream); // Answer the call with local stream
+          call.on('stream', (remoteStream) => {
+            remoteVideo.srcObject = remoteStream; // Display remote stream
+          });
+        });
+
+        socket.on('user-connected', (userId) => {
+          const call = myPeer.call(userId, stream); // Call the newly connected user
+          call.on('stream', (remoteStream) => {
+            remoteVideo.srcObject = remoteStream; // Display remote stream
+          });
+        });
+      })
+      .catch(error => {
+        console.error('Error accessing user media:', error);
+      });
+  </script>
+</body>
+</html>

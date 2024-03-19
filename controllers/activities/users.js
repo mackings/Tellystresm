@@ -204,12 +204,6 @@ exports.commentOnVideo = async (req, res) => {
 };
 
   
-
-
-
-
-
-
 exports.replyToComment = async (req, res) => {
     const { userId, videoId, commentId, content } = req.body;
 
@@ -238,3 +232,4 @@ exports.replyToComment = async (req, res) => {
         res.status(500).json(errorResponse('Internal server error', 500));
     }
 };
+
