@@ -4,7 +4,7 @@ const { successResponse, errorResponse } = require("../utils/utils");
 const { Video,User } = require("../../Models/Usermodel");
 const multer = require("multer");
 const cloudinary = require('cloudinary').v2;
-//const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
 
 
 
@@ -39,8 +39,8 @@ exports.uploadMedia = async (req, res) => {
 
             const { title, description, userId, categories } = req.body;
             const user = await User.findById(userId);
-            if (!user || user.accounttype !== 'organization') {
-                return res.status(403).json(errorResponse('Only organization accounts can upload videos'));
+            if (!user) {
+                return res.status(404).json(errorResponse('User not found', 404));
             }
 
             const videoFile = req.files['video'][0]; 
@@ -77,3 +77,4 @@ exports.uploadMedia = async (req, res) => {
         res.status(500).json(errorResponse('Internal server error'));
     }
 };
+

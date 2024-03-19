@@ -169,3 +169,72 @@ exports.search = async (req, res) => {
         res.status(500).json(errorResponse('Internal server error'));
     }
 };
+
+
+
+exports.commentOnVideo = async (req, res) => {
+    const { userId, videoId, content } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json(errorResponse('User not found', 404));
+        }
+
+        const video = await Video.findById(videoId);
+        if (!video) {
+            return res.status(404).json(errorResponse('Video not found', 404));
+        }
+
+        const newComment = {
+            user: user._id,
+            content: content,
+            createdAt: new Date(),
+        };
+
+        await Video.findByIdAndUpdate(videoId, { $push: { comments: newComment } });
+
+        await Video.populate(newComment, { path: 'user', select: 'userId username' });
+
+        res.status(201).json(successResponse('Comment added successfully', { comment: newComment }));
+    } catch (error) {
+        console.error('Error commenting on video:', error);
+        res.status(500).json(errorResponse('Internal server error', 500));
+    }
+};
+
+  
+
+
+
+
+
+
+exports.replyToComment = async (req, res) => {
+    const { userId, videoId, commentId, content } = req.body;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json(errorResponse('User not found', 404));
+        }
+
+        const video = await Video.findById(videoId);
+        if (!video) {
+            return res.status(404).json(errorResponse('Video not found', 404));
+        }
+
+        const comment = video.comments.id(commentId);
+        if (!comment) {
+            return res.status(404).json(errorResponse('Comment not found', 404));
+        }
+
+        comment.replies.push({ user: userId, content });
+        await video.save();
+
+        res.status(201).json(successResponse('Reply added successfully'));
+    } catch (error) {
+        console.error('Error replying to comment:', error);
+        res.status(500).json(errorResponse('Internal server error', 500));
+    }
+};

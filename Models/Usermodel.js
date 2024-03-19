@@ -15,38 +15,30 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
     isVerified: {
         type: Boolean,
-        default: false,
-      },
-      
-    accounttype: {
+        default: false
+    },
+
+    accountType: {
         type: String,
         enum: ['individual', 'organization'],
-        required: true
+        required: false
     },
+
     profile: {
         firstName: String,
         lastName: String,
-        avatar: String, 
+        avatar: String,
         bio: String
     },
-    followers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    following: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    videos: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Video'
-    }],
+
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    videos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
     streamingProperties: {
         preferredBitrate: String,
-        preferredResolution: String,
+        preferredResolution: String
     }
 }, { timestamps: true });
 
@@ -56,52 +48,35 @@ const videoSchema = new mongoose.Schema({
         required: true
     },
     description: String,
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    videoUrl: {
-        type: String,
-        required: true
-    },
-    imageUrl: {
-        type: String,
-        required: true
-    },
-    isWatched: {
-        type: Boolean,
-        default: false
-    },
-    isAddedToPlaylist: {
-        type: Boolean,
-        default: false
-    },
-    streams: {
-        type: Number,
-        default: 0
-    },
-    likes: {
-        type: Number,
-        default: 0
-    },
-    comments: {
-        type: Number,
-        default: 0
-    },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    videoUrl: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    isWatched: { type: Boolean, default: false },
+    isAddedToPlaylist: { type: Boolean, default: false },
+    streams: { type: Number, default: 0 },
+    likes: { type: Number, default: 0 },
+
+    comments: [{
+        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+        content: { type: String, required: true },
+        replies: [{
+          user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+          content: { type: String, required: true },
+          createdAt: { type: Date, default: Date.now }
+        }],
+        createdAt: { type: Date, default: Date.now }
+      }],
+      
+
     categories: {
         type: [String],
         enum: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'Animation', 'Documentary', 'Family', 'Musical', 'Western', 'Biography', 'Crime', 'History', 'Sport', 'War'],
         required: true
     }
-});
+}, { timestamps: true });
 
- { timestamps: true };
 
 const User = mongoose.model('User', userSchema);
 const Video = mongoose.model('Video', videoSchema);
 
-module.exports = {
-    User,
-    Video
-};
+module.exports = { User, Video };
