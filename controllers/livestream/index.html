@@ -9,41 +9,61 @@
   <video id="localVideo" autoplay></video>
   <video id="remoteVideo" autoplay></video>
 
+  <input type="text" id="roomIdInput" placeholder="Enter Room ID">
+  <button onclick="joinRoom()">Join Room</button>
+  <button onclick="createRoom()">Create Room</button>
+
   <script>
     const socket = io();
-    const roomId = 'your-room-id'; // Replace with your room ID
+    let roomId = '';
 
     const localVideo = document.getElementById('localVideo');
     const remoteVideo = document.getElementById('remoteVideo');
+    let stream; // variable to hold user media stream
 
     // Access user media (audio/video)
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then(stream => {
+      .then(userMediaStream => {
+        stream = userMediaStream;
         localVideo.srcObject = stream;
-        const myPeer = new Peer(); // Initialize Peer
-
-        myPeer.on('open', (id) => {
-          console.log('My peer ID:', id);
-          socket.emit('join-room', roomId); // Join the room
-        });
-
-        myPeer.on('call', (call) => {
-          call.answer(stream); // Answer the call with local stream
-          call.on('stream', (remoteStream) => {
-            remoteVideo.srcObject = remoteStream; // Display remote stream
-          });
-        });
-
-        socket.on('user-connected', (userId) => {
-          const call = myPeer.call(userId, stream); // Call the newly connected user
-          call.on('stream', (remoteStream) => {
-            remoteVideo.srcObject = remoteStream; // Display remote stream
-          });
-        });
       })
       .catch(error => {
         console.error('Error accessing user media:', error);
       });
+
+    const myPeer = new Peer(); // Initialize Peer
+
+    myPeer.on('open', (id) => {
+      console.log('My peer ID:', id);
+    });
+
+    myPeer.on('call', (call) => {
+      call.answer(stream); // Answer the call with local stream
+      call.on('stream', (remoteStream) => {
+        remoteVideo.srcObject = remoteStream; // Display remote stream
+      });
+    });
+
+    socket.on('user-connected', (userId) => {
+    // Call the newly connected user only if not already in a call
+    if (!myPeer.call) {
+      const call = myPeer.call(userId, stream);
+      call.on('stream', (remoteStream) => {
+        remoteVideo.srcObject = remoteStream;
+      });
+    }
+  });
+
+    function joinRoom() {
+    roomId = document.getElementById('roomIdInput').value;
+    socket.emit('join-room', roomId);
+  }
+
+    function createRoom() {
+      roomId = Math.random().toString(36).substr(2, 7); // Generate a random room ID
+      console.log(roomId);
+      socket.emit('join-room', roomId);
+    }
   </script>
 </body>
 </html>

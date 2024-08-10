@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+
 const videoSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -66,14 +67,21 @@ const videoSchema = new mongoose.Schema({
         }],
         createdAt: { type: Date, default: Date.now }
       }],
-      
 
     categories: {
         type: [String],
         enum: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Horror', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'Animation', 'Documentary', 'Family', 'Musical', 'Western', 'Biography', 'Crime', 'History', 'Sport', 'War'],
         required: true
-    }
-}, { timestamps: true });
+    },
+
+    // Adding the casts field
+    casts: [{
+        name: { type: String, required: true },
+        role: { type: String, required: true }
+    }]
+}, 
+{ timestamps: true });
+
 
 
 const User = mongoose.model('User', userSchema);

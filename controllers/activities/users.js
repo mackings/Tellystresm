@@ -23,7 +23,9 @@ exports.getAllVideos = async (req, res) => {
                 isAddedToPlaylist: video.isAddedToPlaylist,
                 streams: video.streams,
                 likes: video.likes,
-                comments: video.comments
+                comments: video.comments,
+                category:video.categories,
+                casts:video.casts
             };
         });
 

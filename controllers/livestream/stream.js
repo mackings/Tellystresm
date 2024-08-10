@@ -18,21 +18,22 @@ function startLive() {
       socket.join(roomId);
       socket.broadcast.to(roomId).emit('user-connected', socket.id);
 
+      // Forward offers and answers between peers
+      socket.on('offer', (offer, to) => {
+        io.to(to).emit('offer', offer);
+      });
+
+      socket.on('answer', (answer, to) => {
+        io.to(to).emit('answer', answer);
+      });
+
+      socket.on('ice-candidate', (iceCandidate, to) => {
+        io.to(to).emit('ice-candidate', iceCandidate);
+      });
+
       socket.on('disconnect', () => {
         socket.broadcast.to(roomId).emit('user-disconnected', socket.id);
       });
-    });
-
-    socket.on('offer', (offer, to) => {
-      io.to(to).emit('offer', offer);
-    });
-
-    socket.on('answer', (answer, to) => {
-      io.to(to).emit('answer', answer);
-    });
-
-    socket.on('ice-candidate', (iceCandidate, to) => {
-      io.to(to).emit('ice-candidate', iceCandidate);
     });
   });
 }

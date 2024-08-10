@@ -24,6 +24,7 @@ const videoUpload = multer({
 
 
 exports.uploadMedia = async (req, res) => {
+    
     try {
         videoUpload(req, res, async function (err) {
             if (err instanceof multer.MulterError) {
@@ -37,7 +38,7 @@ exports.uploadMedia = async (req, res) => {
                 return res.status(400).json(errorResponse('No file uploaded'));
             }
 
-            const { title, description, userId, categories } = req.body;
+            const { title, description, userId, categories, casts } = req.body;
             const user = await User.findById(userId);
             if (!user) {
                 return res.status(404).json(errorResponse('User not found', 404));
@@ -57,13 +58,17 @@ exports.uploadMedia = async (req, res) => {
                 allowed_formats: ['jpg', 'jpeg', 'png'],
             });
 
+            // Parse casts data if it's sent as a JSON string
+            const parsedCasts = typeof casts === 'string' ? JSON.parse(casts) : casts;
+
             const newVideo = new Video({
                 title: title,
                 description: description,
                 user: userId,
                 videoUrl: videoResult.secure_url,
                 imageUrl: imageResult.secure_url,
-                categories: categories
+                categories: categories,
+                casts: parsedCasts  // Adding casts to the video document
             });
 
             await newVideo.save();
@@ -77,4 +82,5 @@ exports.uploadMedia = async (req, res) => {
         res.status(500).json(errorResponse('Internal server error'));
     }
 };
+
 
